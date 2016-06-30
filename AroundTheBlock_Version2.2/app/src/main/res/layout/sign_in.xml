@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/basic1"
+    android:theme="@style/Theme.App.Base">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/edt_email"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="104dp"
+        android:hint="Email"
+        android:textColor="#410101" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/edt_pass"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:hint="Password"
+        android:theme="@style/Theme.App.Base"
+        android:textColor="#410101" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in"
+        android:id="@+id/btn_login"
+        android:layout_marginTop="80dp"
+        android:textStyle="normal"
+        android:onClick="onLogin"
+        android:background="@drawable/oval_button"
+        android:textColor="#ffffff"
+        android:textSize="15dp"
+        android:layout_below="@+id/edt_pass"
+        android:layout_alignParentEnd="false"
+        android:layout_centerInParent="true"
+        android:textAllCaps="false"
+        />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign up"
+        android:id="@+id/btn_signup"
+        android:textStyle="normal"
+        android:onClick="onSignup"
+        android:background="@drawable/oval_button"
+        android:textColor="#ffffff"
+        android:textSize="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/btn_login"
+        android:layout_marginBottom="40dp"
+        android:textAllCaps="false"
+        android:layout_alignEnd="@+id/btn_login" />
+</RelativeLayout>
