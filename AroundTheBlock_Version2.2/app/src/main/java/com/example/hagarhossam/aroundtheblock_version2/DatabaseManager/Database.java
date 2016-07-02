@@ -28,13 +28,13 @@ public class Database {
 
 
     String resp;
-    String url = "http://192.168.1.6";
+    String url = "http://192.168.1.7";
     Boolean edit;
 
     String user_name;
     ArrayList<String> navigateList = new ArrayList<>();
 
-    ArrayList<ArrayList<String>> nearbyPlaces;
+    ArrayList<ArrayList<String>> nearbyPlaces; // search nearby
     ArrayList<ArrayList<String>> searchList;
 
     //review
@@ -42,9 +42,7 @@ public class Database {
     public ArrayList<ArrayList<String>> usersList;
     public ArrayList<String> ratingList;
 
-    // search nearby
-    public ArrayList<ArrayList<String>> nearby;
-    //
+
 
     //non personalized recommender
     ArrayList<ArrayList<String>> placeDetailsFromNonPersonalizedRecommender;
@@ -54,8 +52,13 @@ public class Database {
     double denomeratorScore;
     ArrayList<String> placeIdList;
     ArrayList<Double> scoreList;
-
     //
+
+    // Top rated nearby Recommender
+    ArrayList<String> nearPlaces;
+    ArrayList<ArrayList<String>> TopRatedNearbyPlaces;
+
+
 
     public Database() {
 
@@ -79,6 +82,10 @@ public class Database {
         listOfPlaceDetails = new ArrayList();
         placeDetailsFromNonPersonalizedRecommender = new ArrayList<>();
         //
+
+        // Top rated Nearby places
+        TopRatedNearbyPlaces = new ArrayList<>();
+        nearPlaces = new ArrayList<>();
     }
 
 
@@ -1330,7 +1337,7 @@ public class Database {
                     OkHttpClient client = new OkHttpClient();
                     RequestBody body = new FormEncodingBuilder()
                             .add("latitude",latitude)
-                            .add("longitude",longitude)
+                            .add("longitude", longitude)
                             .add("searchText", searchText) // benefit #2, eni bab3t el userid, 3shan arg3o fil returnarray mn el php lel java, 3shan yb2a array wa7ed w 5las
                             .build();
 
@@ -1379,6 +1386,123 @@ public class Database {
         return nearbyPlaces;
     }
 
+    ///////////////////////////////////////////// Top Nearby places ///////////////////////////////////////////////////
+
+    public ArrayList<String> topNearbyPlaces(final String latitude, final String longitude)
+    {
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody body = new FormEncodingBuilder()
+                            // benefit #2, eni bab3t el userid, 3shan arg3o fil returnarray mn el php lel java, 3shan yb2a array wa7ed w 5las
+                            .add("latitude", latitude)
+                            .add ("longitude",longitude)
+                            .build();
+
+                    //192.168.1.5
+                    Request request = new Request.Builder().url(url+"/AroundTheBlock/NearbyPlaces.php").post(body).build();
+                    //Request request = new Request.Builder().url("http://invortions.site40.net/AroundTheBlock/selectplacedetailsgivenname.php").post(body).build();
+
+                    Response response = client.newCall(request).execute();
+
+                    String jsonData = response.body().string();
+                    System.out.println("data hyaa fil places  "+jsonData);
+
+                    JSONObject rootObject = new JSONObject(jsonData);
+                    JSONArray array = rootObject.getJSONArray("places");
+
+                    for(int i=0;i<array.length();i++)
+                    {
+                        JSONArray array2 = array.getJSONArray(i);
+                        ArrayList<String> tempList = new ArrayList<>();
+                        for(int j=0;j<array2.length();j++)
+                        {
+                            //System.out.println("PLACES AAAARE "+array2.getString(j)+ " \n ");
+                            nearPlaces.add(array2.getString(j));
+                            //String name = array2.getString(0);
+                        }
+                    }
+
+                }catch(Exception e)
+                {
+                    System.out.println("FIL FUNCTION errroros hwa "+e);
+                }
+
+            }
+        });
+
+        try {
+            thread.start();
+            thread.join();
+        }
+        catch (Exception e)
+        {
+            System.out.println("errrrrrrrrrrror in thread");
+        }
+
+        return nearPlaces;
+    }
+
+    ///////////////////////////////////////////// Top Rated Nearby places ///////////////////////////////////////////////////
+    public  ArrayList<ArrayList<String>> topRatedNearbyPlaces(final String placeOne, final String placeTwo, final String placeThree )
+    {
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody body = new FormEncodingBuilder()
+                            .add("placeOne", placeOne)
+                            .add("placeTwo", placeTwo)
+                             .add("placeThree", placeThree)// benefit #2, eni bab3t el userid, 3shan arg3o fil returnarray mn el php lel java, 3shan yb2a array wa7ed w 5las
+                            .build();
+
+                    //192.168.1.5
+                    Request request = new Request.Builder().url(url+"/AroundTheBlock/TopratedNearbyPlaces.php").post(body).build();
+                    //Request request = new Request.Builder().url("http://invortions.site40.net/AroundTheBlock/selectplacedetailsgivenname.php").post(body).build();
+
+                    Response response = client.newCall(request).execute();
+
+                    String jsonData = response.body().string();
+                    System.out.println("data hyaa fil places  "+jsonData);
+
+                    JSONObject rootObject = new JSONObject(jsonData);
+                    JSONArray array = rootObject.getJSONArray("places");
+
+                    for(int i=0;i<array.length();i++)
+                    {
+                        JSONArray array2 = array.getJSONArray(i);
+                        ArrayList<String> tempList = new ArrayList<>();
+                        for(int j=0;j<array2.length();j++)
+                        {
+                            //System.out.println("PLACES AAAARE "+array2.getString(j)+ " \n ");
+                            tempList.add(array2.getString(j));
+                            //String name = array2.getString(0);
+                        }
+                        TopRatedNearbyPlaces.add(tempList);
+                    }
+
+                }catch(Exception e)
+                {
+                    System.out.println("FIL FUNCTION errroros hwa "+e);
+                }
+
+            }
+        });
+
+        try {
+            thread.start();
+            thread.join();
+        }
+        catch (Exception e)
+        {
+            System.out.println("errrrrrrrrrrror in thread");
+        }
+
+        return TopRatedNearbyPlaces;
+    }
 }
 
 

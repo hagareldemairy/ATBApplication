@@ -3,8 +3,6 @@ package com.example.hagarhossam.aroundtheblock_version2.Search;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,23 +17,26 @@ import com.example.hagarhossam.aroundtheblock_version2.PlaceProfile.PlaceDetails
 import com.example.hagarhossam.aroundtheblock_version2.R;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
-public class NearbySearch extends ActionBarActivity {
+public class TopNearbyPlaces extends AppCompatActivity {
 
     GPSTracker gps;
     Database db;
+    Database db1;
     String latitude;
     String longitude;
-    ArrayList<ArrayList<String>> nearbyPlaces;
-    String searchText="";
+    ArrayList<String> nearbyPlaces;
+    ArrayList<ArrayList<String>> TopRatednearbyPlaces;
     ListView _nearbyList;
+    String place1;
+    String place2;
+    String place3;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nearby_search);
+        setContentView(R.layout.activity_top_nearby_places);
 
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         final String email = sharedPreferences.getString("email", "");
@@ -43,22 +44,49 @@ public class NearbySearch extends ActionBarActivity {
         ////////  Initialization  ////////
 
         db = new Database();
-        nearbyPlaces = new ArrayList<ArrayList<String>>();
-        gps = new GPSTracker(NearbySearch.this);
-
-        Intent intent = getIntent();
-        searchText = intent.getExtras().getString("searchText");
-
-        _nearbyList = (ListView)findViewById(R.id.nearbyPlaces);
+        db1 = new Database();
+        nearbyPlaces = new ArrayList<String>();
+        TopRatednearbyPlaces = new ArrayList<ArrayList<String>>();
+        gps = new GPSTracker(TopNearbyPlaces.this);
+        _nearbyList = (ListView)findViewById(R.id.topNearbyPlaces);
 
         //////////////////////////////////
 
         if(gps.canGetLocation()){
 
-             latitude = Double.toString (gps.getLatitude());
-             longitude = Double.toString(gps.getLongitude());
+            latitude = Double.toString (gps.getLatitude());
+            longitude = Double.toString(gps.getLongitude());
 
-            //Toast.makeText(getApplicationContext(),"latitude "+latitude + "longitude "+longitude,Toast.LENGTH_LONG).show();
+            //////////////////////////////////Search for the nearby places /////////////////////////////////
+
+            nearbyPlaces = db.topNearbyPlaces(latitude, longitude);
+
+            System.out.println("NEARBY PLACES " + nearbyPlaces);
+
+            place1= nearbyPlaces.get(0).toString();
+            place2= nearbyPlaces.get(1).toString();
+            place3= nearbyPlaces.get(2).toString();
+
+
+
+            TopRatednearbyPlaces = db.topRatedNearbyPlaces(place1, place2, place3);
+            System.out.println("TOP NEARBY PLACES " + TopRatednearbyPlaces);
+
+
+            if (nearbyPlaces.size() == 0) {
+
+            }
+
+            if (TopRatednearbyPlaces.size() == 0) {
+
+            }
+
+            ListAdapter buckysAdaptor = new SearchCustomAdaptor(this, TopRatednearbyPlaces);
+            System.out.println("LIST ABAPTER is " + buckysAdaptor);
+
+            ListView buckysListView = (ListView) findViewById(R.id.topNearbyPlaces);
+            buckysListView.setAdapter(buckysAdaptor);
+
         }
 
         else{
@@ -66,24 +94,14 @@ public class NearbySearch extends ActionBarActivity {
 
         }
 
-        //////////////////////////////////Search for the entered search /////////////////////////////////
 
-        System.out.println("SEARCHH TEXT "+searchText);
-        nearbyPlaces = db.searchNearby(latitude,longitude,searchText);
-
-        ListAdapter buckysAdaptor = new SearchCustomAdaptor(this, nearbyPlaces);
-        System.out.println("LIST ABAPTER is " + buckysAdaptor);
-
-        ListView buckysListView = (ListView) findViewById(R.id.nearbyPlaces);
-        buckysListView.setAdapter(buckysAdaptor);
 
 
         //////////////////////////////////Select place from List /////////////////////////////////
 
-
         ArrayList tempList = new ArrayList();
-        for (int i = 0; i < nearbyPlaces.size(); i++) {
-            tempList.add(nearbyPlaces.get(i).get(0));
+        for (int i = 0; i < TopRatednearbyPlaces.size(); i++) {
+            tempList.add(TopRatednearbyPlaces.get(i).get(0));
         }
 
         //templist di arraylist feha 3 elements eli homa el names beto3 el places recommended
@@ -101,7 +119,7 @@ public class NearbySearch extends ActionBarActivity {
                 ArrayList<String> placeDetails = new ArrayList<String>();
                 placeDetails = db.SelectPlaceDetailsGivenName(selectedFromList);
 
-                Intent intent = new Intent(NearbySearch.this, PlaceDetails.class);//mfrood mn place profile l place profile w 5alas kda 5eles el recommendation
+                Intent intent = new Intent(TopNearbyPlaces.this, PlaceDetails.class);//mfrood mn place profile l place profile w 5alas kda 5eles el recommendation
                 intent.putStringArrayListExtra("placeDetails", placeDetails);
                 intent.putExtra("userId", email); // w hnak fil place profile page m7tag nest2blo b intent tnya
 
@@ -109,5 +127,6 @@ public class NearbySearch extends ActionBarActivity {
 
             }
         });
+
     }
 }

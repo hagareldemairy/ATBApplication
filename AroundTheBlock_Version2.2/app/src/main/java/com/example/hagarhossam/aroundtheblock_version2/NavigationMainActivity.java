@@ -25,6 +25,7 @@ import com.example.hagarhossam.aroundtheblock_version2.DatabaseManager.Database;
 import com.example.hagarhossam.aroundtheblock_version2.PlaceProfile.PlaceDetails;
 import com.example.hagarhossam.aroundtheblock_version2.Search.CategorySearch;
 import com.example.hagarhossam.aroundtheblock_version2.Search.SearchedPlaces;
+import com.example.hagarhossam.aroundtheblock_version2.Search.TopNearbyPlaces;
 import com.example.hagarhossam.aroundtheblock_version2.UserProfile.SignUp;
 import com.example.hagarhossam.aroundtheblock_version2.UserProfile.Sign_in;
 import com.example.hagarhossam.aroundtheblock_version2.UserProfile.UserProfile;
@@ -97,7 +98,7 @@ public class NavigationMainActivity extends ActionBarActivity {
 
 
 
-        //non personalized recommender
+        //////////////// Non personalized recommender //////////////////////////////
 
 
         /////////////////to be put in any page... maybe in homepage no problem
@@ -231,6 +232,10 @@ public class NavigationMainActivity extends ActionBarActivity {
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
 
+        //////////////////////////////////// Top rated Nearby Places ////////////////////////////////
+
+
+
     }
 
     @Override
@@ -256,6 +261,12 @@ public class NavigationMainActivity extends ActionBarActivity {
 
     }
 
+    public void nearbyPlacesButtonClicked(View view ){
+
+            Intent searchIntent = new Intent(this, TopNearbyPlaces.class);
+            startActivity(searchIntent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -268,12 +279,12 @@ public class NavigationMainActivity extends ActionBarActivity {
 
             // action with ID action_settings was selected
             case R.id.menu_option_2:
-                Toast.makeText(this, "Profile selected", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "Profile selected", Toast.LENGTH_SHORT).show();
 
                 if(user_email !=""  && user_password != ""){
                     Intent profileIntent = new Intent(this, UserProfile.class);
                     startActivity(profileIntent);
-                    Toast.makeText(this, user_email, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, user_email, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Intent signIntent = new Intent(this, Sign_in.class);
@@ -286,13 +297,16 @@ public class NavigationMainActivity extends ActionBarActivity {
                 break;
 
             case R.id.menu_option_3:
-                Toast.makeText(this, "Feedback selected", Toast.LENGTH_SHORT)
-                        .show();
+               // Toast.makeText(this, "Feedback selected", Toast.LENGTH_SHORT)
+                      //  .show();
+
+                Intent feedbackIntent = new Intent(this, Feedback.class);
+                startActivity(feedbackIntent);
                 break;
 
             case R.id.menu_option_4:
-                Toast.makeText(this, "Sign up selected", Toast.LENGTH_SHORT)
-                        .show();
+                //Toast.makeText(this, "Sign up selected", Toast.LENGTH_SHORT)
+                       // .show();
                 Intent signUpIntent = new Intent(this, SignUp.class);
                 startActivity(signUpIntent);
                 break;
@@ -306,7 +320,7 @@ public class NavigationMainActivity extends ActionBarActivity {
 
             return true;
         }
-        Toast.makeText(this, "Entered options Selected", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Entered options Selected", Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
 
 
@@ -318,41 +332,6 @@ public class NavigationMainActivity extends ActionBarActivity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         actionBarDrawerToggle.syncState();
-    }
-
-    //Create method replace fragment
-
-
-    private void replaceFragment(int pos){
-
-        Fragment fragment =null;
-        switch(pos){
-
-            case 0:
-                fragment = new Fragment1();
-                break;
-
-            case 1:
-                fragment = new Fragment2();
-                break;
-
-            case 2:
-                fragment = new Fragment3();
-                break;
-
-            default:
-                fragment = new Fragment1();
-                break;
-        }
-
-        if(null!= fragment){
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction transcation = fragmentManager.beginTransaction();
-            transcation.replace(R.id.main_content,fragment);
-            transcation.addToBackStack(null);
-            transcation.commit();
-
-        }
     }
 
 }

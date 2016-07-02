@@ -68,8 +68,6 @@ public class SearchedPlaces extends AppCompatActivity  {
         buckysListView.setAdapter(buckysAdaptor);
 
 
-        //////////////////////////////////Search by near by/////////////////////////////////
-
 
         //////////////////////////////////Select place from List /////////////////////////////////
 

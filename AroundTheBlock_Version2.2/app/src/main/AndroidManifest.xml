@@ -68,7 +68,9 @@
         <activity android:name=".Search.CategorySearch" />
         <activity android:name=".PlaceProfile.ReportPlaceError" />
         <activity android:name=".Search.GPSTracker" />
-        <activity android:name=".Search.NearbySearch"></activity>
+        <activity android:name=".Search.NearbySearch" />
+        <activity android:name=".Search.TopNearbyPlaces" />
+        <activity android:name=".Feedback"></activity>
     </application>
 
 </manifest>
